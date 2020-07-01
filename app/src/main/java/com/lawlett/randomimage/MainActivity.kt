@@ -1,6 +1,8 @@
 package com.lawlett.randomimage
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -10,34 +12,35 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.lawlett.randomimage.recycler.ImageAdapter
+import com.lawlett.randomimage.utils.IOnClickListener
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.random.Random
+import com.lawlett.randomimage.ImageActivity as ImageActivity
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), IOnClickListener {
 
     var list: MutableList<String> = mutableListOf<String>()
-    var adapter= ImageAdapter(list as ArrayList<String>)
+    var adapter = ImageAdapter(list as ArrayList<String>, this)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         addMainImage()
-        
-        var recyclerView:RecyclerView=findViewById(R.id.recyclerview)
 
-        recyclerView.layoutManager=LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false)
+        var recyclerView: RecyclerView = findViewById(R.id.recyclerview)
+
+        recyclerView.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.setAdapter(adapter)
 
-
     }
-
 
     fun showImageClick(view: View) {
         var random = Random
         var i: Int
         i = random.nextInt(list.size)
-        Toast.makeText(this,i.toString(),Toast.LENGTH_LONG).show()
+        Toast.makeText(this, i.toString(), Toast.LENGTH_LONG).show()
     }
 
     private fun addMainImage() {
@@ -53,6 +56,12 @@ class MainActivity : AppCompatActivity() {
         list.add(edit_text.text.toString())
         adapter.notifyDataSetChanged()
         edit_text.setText("")
+    }
+
+    override fun onItemClick(position: Int) {
+        val intent = Intent(this,ImageActivity::class.java)
+        intent.putExtra("image", list.get(position))
+        startActivity(intent)
     }
 }
 
