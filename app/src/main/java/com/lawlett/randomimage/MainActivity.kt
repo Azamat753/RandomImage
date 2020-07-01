@@ -1,26 +1,25 @@
 package com.lawlett.randomimage
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.lawlett.randomimage.recycler.ImageAdapter
-import com.lawlett.randomimage.utils.IOnClickListener
+import com.lawlett.randomimage.recycler.IOnClickListener
+import com.lawlett.randomimage.utils.showToast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.random.Random
 import com.lawlett.randomimage.ImageActivity as ImageActivity
 
-class MainActivity : AppCompatActivity(), IOnClickListener {
+class MainActivity : AppCompatActivity(),
+    IOnClickListener {
 
-    var list: MutableList<String> = mutableListOf<String>()
-    var adapter = ImageAdapter(list as ArrayList<String>, this)
+    private var list: MutableList<String> = mutableListOf()
+    private var adapter = ImageAdapter(list as ArrayList<String>, this)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,19 +27,19 @@ class MainActivity : AppCompatActivity(), IOnClickListener {
         setContentView(R.layout.activity_main)
         addMainImage()
 
-        var recyclerView: RecyclerView = findViewById(R.id.recyclerview)
+        val recyclerView: RecyclerView = findViewById(R.id.recyclerview)
 
         recyclerView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        recyclerView.setAdapter(adapter)
+        recyclerView.adapter = adapter
 
     }
 
     fun showImageClick(view: View) {
-        var random = Random
-        var i: Int
+        val random = Random
+        val i: Int
         i = random.nextInt(list.size)
-        Toast.makeText(this, i.toString(), Toast.LENGTH_LONG).show()
+        applicationContext.showToast(i.toString())
     }
 
     private fun addMainImage() {
@@ -60,7 +59,7 @@ class MainActivity : AppCompatActivity(), IOnClickListener {
 
     override fun onItemClick(position: Int) {
         val intent = Intent(this,ImageActivity::class.java)
-        intent.putExtra("image", list.get(position))
+        intent.putExtra("image", list[position])
         startActivity(intent)
     }
 }
